@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 const passport = require("passport");
 const flash = require("connect-flash");
@@ -17,17 +18,22 @@ const adminRoutes = require("./routes/admin.js");
 const donorRoutes = require("./routes/donor.js");
 const agentRoutes = require("./routes/agent.js");
 
+// Set the absolute path to your views folder
+app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+
 app.use(expressLayouts);
 app.use("/assets", express.static(__dirname + "/assets"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(session({
-  secret: "secret",
-  resave: true,
-  saveUninitialized: true,
-}));
+app.use(
+  session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -55,7 +61,6 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-// Connect DB first, then start server
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
